@@ -1,0 +1,27 @@
+name: JJ BTC Quick Check
+
+on:
+  push:
+    branches:
+      - research/jj-btc-prop-ev
+    paths:
+      - 'quick_btc_check/**'
+      - '.github/workflows/jj-btc-quick-check.yml'
+
+jobs:
+  quick-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check pandas numpy requests
+      - run: python quick_btc_check/quick_diag.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jj-btc-quick-check-results
+          path: quick_btc_check/results/
+          retention-days: 7
