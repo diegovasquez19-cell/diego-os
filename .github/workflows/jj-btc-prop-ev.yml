@@ -1,0 +1,31 @@
+name: JJ BTC Prop EV Pilot
+
+on:
+  push:
+    branches:
+      - research/jj-btc-prop-ev
+    paths:
+      - 'jj_btc_prop_ev/**'
+      - '.github/workflows/jj-btc-prop-ev.yml'
+  workflow_dispatch:
+
+jobs:
+  run-pilot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pandas numpy requests
+      - name: Run JJ-BTC pilot
+        run: python jj_btc_prop_ev/run_jj_btc_prop_ev.py
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: jj-btc-prop-ev-results
+          path: jj_btc_prop_ev/results/
+          retention-days: 7
